@@ -1,0 +1,21 @@
+﻿@using System.Net.Http
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using Portfolio_View.Models
+@page "/items"
+
+<h1>Items</h1>
+
+<ul>
+    @foreach(var item in itemList)
+    {
+        <li>@item.Name</li>
+    }
+</ul>
+
+@code {
+    private List<Item>? itemList;
+
+    protected override async Task OnInitializedAsync()=>
+        itemList = await Http.GetFromJsonAsync<List<Item>>("data/item");
+}
