@@ -12,8 +12,7 @@ public class Item
     [Required]
     [Column(TypeName = "decimal(18,4)")]
     public decimal Price { get; set; }
-    [Required]
-    public int SwapFrequency { get; set; }
+    public int? SwapFrequency { get; set; }
     [JsonIgnore]
     public List<Category> Categories { get; } = new();
     [JsonIgnore]
