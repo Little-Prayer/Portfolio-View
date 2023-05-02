@@ -2,20 +2,24 @@
 @inject HttpClient Http
 @using System.Net.Http.Json
 @using Portfolio_View.Models
-@page "/items"
+@page "/Items"
 
-<h1>Items</h1>
-
+@if(itemList is null)
+{
+    <p>アイテムがありません</p>
+}
+else
+{
 <ul>
     @foreach(var item in itemList)
     {
         <li>@item.Name</li>
     }
 </ul>
-
+}
 @code {
-    private List<Item>? itemList;
+    private Item[]? itemList;
 
     protected override async Task OnInitializedAsync()=>
-        itemList = await Http.GetFromJsonAsync<List<Item>>("data/item");
+        itemList = await Http.GetFromJsonAsync<Item[]>("item");
 }
