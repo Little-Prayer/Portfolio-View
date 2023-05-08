@@ -6,20 +6,24 @@
 
 @if(itemList is null)
 {
-    <p>アイテムがありません</p>
+    <p>読み込み中</p>
 }
 else
 {
-<ul>
+<table>
     @foreach(var item in itemList)
     {
-        <li>@item.Name</li>
+        <tr>
+            <th>@item.Name</th>
+            <th>@(item.Price)円</th>
+            <th>@(item.SwapFrequency)日</th>
+        </tr>
     }
-</ul>
+</table>
 }
 @code {
-    private Item[]? itemList;
+    private List<Item>? itemList;
 
     protected override async Task OnInitializedAsync()=>
-        itemList = await Http.GetFromJsonAsync<Item[]>("item");
+        itemList = await Http.GetFromJsonAsync<List<Item>>("item");
 }
