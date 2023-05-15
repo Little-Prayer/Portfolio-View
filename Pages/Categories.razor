@@ -1,0 +1,29 @@
+@using System.Net.Http
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using Portfolio_View.Models
+@page "/categories"
+
+@if (categoryList is null)
+{
+    <p>読み込み中</p>
+}
+else
+{
+    <table>
+    @foreach (var category in categoryList)
+        {
+            <tr>
+                <th>@category.Name</th>
+                <th>@category.Items.Count()</th>
+                <th>@category.Items.Sum(i => i.Price)</th>
+            </tr>
+        }
+    </table>
+}
+@code {
+    private List<Category>? categoryList;
+
+    protected override async Task OnInitializedAsync() =>
+    categoryList = await Http.GetFromJsonAsync<List<Category>>("category");
+}

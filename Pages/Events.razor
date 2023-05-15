@@ -1,0 +1,28 @@
+@using System.Net.Http
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using Portfolio_View.Models
+@page "/events"
+
+@if (evList is null)
+{
+    <p>読み込み中</p>
+}
+else
+{
+    <table>
+    @foreach (var ev in evList)
+        {
+            <tr>
+                <th>@ev.Date</th>
+                <th>@ev.Item.Name</th>
+            </tr>
+        }
+    </table>
+}
+@code {
+    private List<Event>? evList;
+
+    protected override async Task OnInitializedAsync() =>
+    evList = await Http.GetFromJsonAsync<List<Event>>("event");
+}

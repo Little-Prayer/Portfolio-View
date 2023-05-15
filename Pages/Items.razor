@@ -2,28 +2,28 @@
 @inject HttpClient Http
 @using System.Net.Http.Json
 @using Portfolio_View.Models
-@page "/Items"
+@page "/items"
 
-@if(itemList is null)
+@if (itemList is null)
 {
     <p>読み込み中</p>
 }
 else
 {
-<table>
-    @foreach(var item in itemList)
-    {
-        <tr>
-            <th>@item.Name</th>
-            <th>@(item.Price)円</th>
-            <th>@(item.SwapFrequency)日</th>
-        </tr>
-    }
-</table>
+    <table>
+    @foreach (var item in itemList)
+        {
+            <tr>
+                <th>@item.Name</th>
+                <th>@(item.Price)円</th>
+                <th>@(item.SwapFrequency is not null ? item.SwapFrequency.ToString() + "日" : "なし")</th>
+            </tr>
+        }
+    </table>
 }
 @code {
     private List<Item>? itemList;
 
-    protected override async Task OnInitializedAsync()=>
-        itemList = await Http.GetFromJsonAsync<List<Item>>("item");
+    protected override async Task OnInitializedAsync() =>
+    itemList = await Http.GetFromJsonAsync<List<Item>>("item");
 }
