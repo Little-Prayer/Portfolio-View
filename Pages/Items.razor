@@ -17,6 +17,10 @@ else
                 <th>@item.Name</th>
                 <th>@(item.Price)円</th>
                 <th>@(item.SwapFrequency is not null ? item.SwapFrequency.ToString() + "日" : "なし")</th>
+                @foreach(var category in item.Categories??new List<Category>())
+                {
+                    <th>@category.Name</th>
+                }
             </tr>
         }
     </table>

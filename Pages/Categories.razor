@@ -15,8 +15,7 @@ else
         {
             <tr>
                 <th>@category.Name</th>
-                <th>@category.Items.Count()</th>
-                <th>@category.Items.Sum(i => i.Price)</th>
+                <th>@category.Items?.Count()</th>
             </tr>
         }
     </table>
