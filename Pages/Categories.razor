@@ -11,11 +11,21 @@
 else
 {
     <table>
+        <tr>
+            <th>カテゴリ名</th>
+            <th>アイテム数</th>
+            <th>30日あたり出費概算</th>
+        </tr>
     @foreach (var category in categoryList)
         {
             <tr>
-                <th>@category.Name</th>
-                <th>@category.Items?.Count()</th>
+                <td>@category.Name</td>
+                <td>@category.Items?.Count()</td>
+                <td>
+                    @(category.Items?
+                        .Sum(i => i.Price * 30 / i.SwapFrequency)?
+                        .ToString("N1"))
+                </td>
             </tr>
         }
     </table>

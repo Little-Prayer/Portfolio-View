@@ -11,11 +11,15 @@
 else
 {
     <table>
-    @foreach (var ev in evList)
+        <tr>
+            <th>交換日</th>
+            <th>アイテム名</th>
+        </tr>
+    @foreach (var ev in evList.OrderByDescending(e => e.Date))
         {
             <tr>
-                <th>@ev.Date</th>
-                <th>@ev.Item.Name</th>
+                <td>@(ev.Date.ToString("yyyy年MM月dd日"))</td>
+                <td>@ev.Item.Name</td>
             </tr>
         }
     </table>
