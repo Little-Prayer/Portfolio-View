@@ -11,25 +11,23 @@
 else
 {
     <table>
-        <tr>
-            <th>アイテム名</th>
-            <th>価格</th>
-            <th>交換頻度</th>
-            <th>カテゴリ</th>
-            <th>最終交換日</th>
-            <th>交換予定日</th>
-        </tr>
-    @foreach (var item in itemList)
+    <tr>
+        <th>アイテム名</th>
+        <th>価格</th>
+        <th>交換頻度</th>
+        <th>カテゴリ</th>
+        <th>最終交換日</th>
+        <th>交換予定日</th>
+    </tr>
+    @foreach (var item in itemList.OrderByDescending(i => i.SwapExpectedDate()))
         {
             <tr>
                 <td>@item.Name</td>
                 <td>@(item.Price.ToString("N0"))円</td>
-                <td>@(item.SwapFrequency is not null ? item.SwapFrequency.ToString() + "日" : "なし")</td>
-                <td>@(item.Categories!.Count > 0 ? string.Join(",", item.Categories.Select(c=>c.Name)) : "なし")</td>
-                @{
-                    var lastSwapDate = item.Events?.MaxBy(e=>e.Date)?.Date;
-                }
-                <td>@(lastSwapDate?.ToString("yyyy年MM月dd日"))</td>
+                <td>@(item.SwapFrequency() is not null ? item.SwapFrequency().ToString() + "日" : "-")</td>
+                <td>@(item.Categories!.Count > 0 ? string.Join(",", item.Categories.Select(c => c.Name)) : "なし")</td>
+                <td>@(item.LastSwapDate()?.ToString("yyyy年MM月dd日") ?? "-")</td>
+                <td>@(item.SwapExpectedDate()?.ToString("yyyy年MM月dd日") ?? "-")</td>
             </tr>
         }
     </table>

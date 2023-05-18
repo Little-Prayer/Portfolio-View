@@ -11,7 +11,16 @@ public class Item
     [Required]
     [Column(TypeName = "decimal(18,4)")]
     public decimal Price { get; set; }
-    public int? SwapFrequency { get; set; }
-    public IList<Category>? Categories { get; set;}
-    public IList<Event>? Events { get; set;}
+    public long? Ticks { get; set; }
+    public IList<Category>? Categories { get; set; }
+    public IList<Event>? Events { get; set; }
+
+    public DateTime? LastSwapDate() => Events?.MaxBy(e => e.Date)?.Date;
+
+    public DateTime? SwapExpectedDate() => SwapFrequency() is not null ?
+                                            LastSwapDate()?.Add(SwapFrequency()!.Value) :
+                                            null;
+    public TimeSpan? SwapFrequency()=> Ticks is not null ? 
+                                        new TimeSpan(Ticks.Value) :
+                                        null;
 }
