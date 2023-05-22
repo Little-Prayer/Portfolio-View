@@ -3,6 +3,9 @@
 @using System.Net.Http.Json
 @using Portfolio_View.Models
 @page "/events"
+@page "/items/{id:int}/events"
+
+
 
 @if (evList is null)
 {
@@ -11,10 +14,10 @@
 else
 {
     <table>
-        <tr>
-            <th>交換日</th>
-            <th>アイテム名</th>
-        </tr>
+    <tr>
+        <th>交換日</th>
+        <th>アイテム名</th>
+    </tr>
     @foreach (var ev in evList.OrderByDescending(e => e.Date))
         {
             <tr>
@@ -27,6 +30,9 @@ else
 @code {
     private List<Event>? evList;
 
-    protected override async Task OnInitializedAsync() =>
-    evList = await Http.GetFromJsonAsync<List<Event>>("event");
+    [Parameter] public int? id { get; set; }
+
+    protected override async Task OnParametersSetAsync() =>
+    evList = await Http.GetFromJsonAsync<List<Event>>(id is null ? "event" : "item/" + id.Value.ToString() + "/event");
+
 }

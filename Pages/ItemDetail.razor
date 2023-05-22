@@ -3,13 +3,29 @@
 @using Portfolio_View.Models
 @page "/items/{id:int}"
 
-@if(item is null)
+@if (item is null)
 {
     <p>読み込み中</p>
 }
 else
 {
-    <input @bind="item.Name"/>
+    <p>アイテム名</p><input value=@item.Name />
+    <p>価格</p><input value=@item.Price.ToString("N0")/>
+    <p>@(item.Ticks is null ? "-" : item.SwapFrequency()?.TotalDays.ToString() + "日")</p>
+    @if (item.Categories is null || item.Categories.Count == 0)
+    {
+        <p>なし</p>
+    }
+    else
+    {
+        <p>@(string.Join(",", item.Categories.Select(c => c.Name)))</p>
+    }
+    <p>最終交換日：@(item.LastSwapDate()?.ToString("yyyy年MM月dd日") ?? "なし")</p>
+    <p>交換予定日：@(item.SwapExpectedDate()?.ToString("yyyy年MM月dd日") ?? "なし")</p>
+    @foreach(var ev in item.Events!)
+    {
+        <p>@ev.Date</p>
+    }
 }
 
 @code {
