@@ -14,7 +14,7 @@ else
     <tr>
         <th>カテゴリ名</th>
         <th>アイテム数</th>
-        <th>30日あたり出費概算</th>
+        <th>30日あたり費用</th>
     </tr>
     @foreach (var category in categoryList)
         {
@@ -23,7 +23,7 @@ else
                 <td>@category.Items?.Count()</td>
                 <td>
                     @(category.Items?
-                        .Sum(i => i.Ticks is not null ? i.Price * 30 / (int)i.SwapFrequency()?.TotalDays! : 0)
+                        .Sum(i => i.Ticks is not null && (int)i.SwapFrequency()?.TotalDays! > 0 ? i.Price * 30 / (int)i.SwapFrequency()?.TotalDays! : 0)
                         .ToString("N1"))
                 </td>
             </tr>

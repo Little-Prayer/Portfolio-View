@@ -17,7 +17,7 @@ public class Item
 
     public DateTime? LastSwapDate() => Events?.MaxBy(e => e.Date)?.Date;
 
-    public DateTime? SwapExpectedDate() => SwapFrequency() is not null ?
+    public DateTime? SwapExpectedDate() => Ticks is not null ?
                                             LastSwapDate()?.Add(SwapFrequency()!.Value) :
                                             null;
     public TimeSpan? SwapFrequency()=> Ticks is not null ? 
