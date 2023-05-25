@@ -9,8 +9,8 @@
 }
 else
 {
-    <p>アイテム名</p><input value=@item.Name />
-    <p>価格</p><input value=@item.Price.ToString("N0")/>
+    <p>アイテム名：@item.Name</p>
+    <p>価格：@item.Price.ToString("N0")</p>
     <p>@(item.Ticks is null ? "-" : item.SwapFrequency()?.TotalDays.ToString() + "日")</p>
     @if (item.Categories is null || item.Categories.Count == 0)
     {
@@ -26,6 +26,10 @@ else
     {
         <p>@ev.Date</p>
     }
+    <p>
+        <button class="btn editbtn" @onclick="OnEditButtonClicked">編集</button>
+    </p>
+    
 }
 
 @code {

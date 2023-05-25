@@ -1,0 +1,17 @@
+@using System.Net.Http
+@inject HttpClient Http
+@using Portfolio_View.Models
+
+<p>アイテム名：<input type="text" value=@item!.Name></p>
+<p>価格：<input type="text" value=@item.Price></p>
+<p>交換頻度：<input type="number" value=@(item.SwapFrequency()?.TotalDays)></p>
+<p>カテゴリ</p>
+<p>最終交換日：<input type="date"></p>
+
+
+@code {
+    [Parameter]
+    public Item? item { get; set; }
+    [Parameter]
+    public EventCallback<Item> OnItemEdit { get; set; }
+}
