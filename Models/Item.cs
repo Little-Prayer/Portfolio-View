@@ -16,12 +16,12 @@ public class Item
     public IList<Category>? Categories { get; set; }
     public IList<Event>? Events { get; set; }
 
-    public DateTime? LastSwapDate() => Events?.MaxBy(e => e.Date)?.Date;
+    public DateTime? LastSwapDate => Events?.MaxBy(e => e.Date)?.Date;
 
-    public DateTime? SwapExpectedDate() => Ticks is not null ?
-                                            LastSwapDate()?.Add(SwapFrequency()!.Value) :
+    public DateTime? SwapExpectedDate => Ticks is not null ?
+                                            LastSwapDate?.Add(SwapFrequency!.Value) :
                                             null;
-    public TimeSpan? SwapFrequency()=> Ticks is not null ? 
+    public TimeSpan? SwapFrequency=> Ticks is not null ? 
                                         new TimeSpan(Ticks.Value) :
                                         null;
 }

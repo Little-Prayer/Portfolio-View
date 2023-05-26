@@ -2,16 +2,33 @@
 @inject HttpClient Http
 @using Portfolio_View.Models
 
-<p>アイテム名：<input type="text" value=@item!.Name></p>
-<p>価格：<input type="text" value=@item.Price></p>
-<p>交換頻度：<input type="number" value=@(item.SwapFrequency()?.TotalDays)></p>
+<p>アイテム名：<input type="text" @bind="item!.Name"></p>
+<p>価格：<input type="text" @bind="item.Price">円</p>
+<p>交換頻度：<input type="number" @bind="Days">日</p>
 <p>カテゴリ</p>
-<p>最終交換日：<input type="date"></p>
+
+<p><button class="btn editbtn" @onclick="OnEditButtonClicked">確定</button></p>
+<p><button class="btn cancelbtn" @onclick=@(()=> CallBack.InvokeAsync(null))>キャンセル</button></p>
 
 
 @code {
     [Parameter]
     public Item? item { get; set; }
     [Parameter]
-    public EventCallback<Item> OnItemEdit { get; set; }
+    public EventCallback<Item> CallBack { get; set; }
+
+    public double? Days;
+
+    protected override void OnParametersSet()
+    {
+        Days = item?.SwapFrequency?.TotalDays;
+    }
+    private Task OnEditButtonClicked()
+    {
+        if (Days is not null)
+        {
+            item!.Ticks = new TimeSpan(days: (int)Days.Value, 0, 0, 0).Ticks;
+        }
+        return CallBack.InvokeAsync(item);
+    }
 }

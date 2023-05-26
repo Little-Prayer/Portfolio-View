@@ -9,27 +9,33 @@
 }
 else
 {
-    <p>アイテム名：@item.Name</p>
-    <p>価格：@item.Price.ToString("N0")</p>
-    <p>@(item.Ticks is null ? "-" : item.SwapFrequency()?.TotalDays.ToString() + "日")</p>
-    @if (item.Categories is null || item.Categories.Count == 0)
+    @if (!isEdit)
     {
-        <p>なし</p>
+        <p>アイテム名：@item.Name</p>
+        <p>価格：@item.Price.ToString("N0")</p>
+        <p>@(item.Ticks is null ? "-" : item.SwapFrequency?.TotalDays.ToString() + "日")</p>
+        @if (item.Categories is null || item.Categories.Count == 0)
+        {
+            <p>なし</p>
+        }
+        else
+        {
+            <p>@(string.Join(",", item.Categories.Select(c => c.Name)))</p>
+        }
+        <p>最終交換日：@(item.LastSwapDate?.ToString("yyyy年MM月dd日") ?? "なし")</p>
+        <p>交換予定日：@(item.SwapExpectedDate?.ToString("yyyy年MM月dd日") ?? "なし")</p>
+        @foreach (var ev in item.Events!)
+        {
+            <p>@ev.Date</p>
+        }
+        <p>
+            <button class="btn editbtn" @onclick=@(()=>isEdit=true)>編集</button>
+        </p>
     }
     else
     {
-        <p>@(string.Join(",", item.Categories.Select(c => c.Name)))</p>
+        <ItemEdit item="@item" CallBack="@ItemEditExecution" />
     }
-    <p>最終交換日：@(item.LastSwapDate()?.ToString("yyyy年MM月dd日") ?? "なし")</p>
-    <p>交換予定日：@(item.SwapExpectedDate()?.ToString("yyyy年MM月dd日") ?? "なし")</p>
-    @foreach(var ev in item.Events!)
-    {
-        <p>@ev.Date</p>
-    }
-    <p>
-        <button class="btn editbtn" @onclick="OnEditButtonClicked">編集</button>
-    </p>
-    
 }
 
 @code {
@@ -37,7 +43,17 @@ else
     public int id { get; set; }
 
     private Item? item;
+    private bool isEdit;
 
     protected override async Task OnInitializedAsync() =>
     item = await Http.GetFromJsonAsync<Item>("item/" + id.ToString());
+
+    private void ItemEditExecution(Item? _item)
+    {
+        if (_item is not null)
+        {
+            Http.PutAsJsonAsync($"item/{id}", _item);
+        }
+        isEdit = false;
+    }
 }
