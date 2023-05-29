@@ -1,0 +1,26 @@
+@using System.Net.Http
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@using Portfolio_View.Models
+@page "/items/new"
+
+<ItemEdit item=@item CallBack="CreateNewItem" />
+
+@code {
+    private Item? item;
+
+    protected override void OnInitialized()
+    {
+        item = new Item();
+        item.ItemId = null;
+        item.Categories = new List<Category>();
+        item.Events = new List<Event>();
+    }
+
+    private async void CreateNewItem(Item item)
+    {
+        if (item is null) NavigationManager.NavigateTo("items");
+        var newItem = await Http.PostAsJsonAsync("item", item);
+        NavigationManager.NavigateTo($"items/{newItem.Content.ReadFromJsonAsync<Item>().Result?.ItemId}");
+    }
+}
