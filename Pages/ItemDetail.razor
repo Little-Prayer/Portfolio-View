@@ -64,11 +64,9 @@ else
         isEdit = false;
     }
 
-    private void OnClickDeleteButton()
+    private async Task OnClickDeleteButton()
     {
-        if (Http.DeleteFromJsonAsync<Item>($"item/{id}").IsCompletedSuccessfully)
-        {
-            NavigationManager.NavigateTo("items");
-        };
+        await Http.DeleteFromJsonAsync<Item>($"item/{id}");
+        NavigationManager.NavigateTo("items");
     }
 }

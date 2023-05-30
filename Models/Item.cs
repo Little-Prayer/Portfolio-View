@@ -13,7 +13,7 @@ public class Item
     [Column(TypeName = "decimal(18,4)")]
     public decimal Price { get; set; }
     public long? Ticks { get; set; }
-    public IList<Category>? Categories { get; set; }
+    public ISet<Category>? Categories { get; set; }
     public IList<Event>? Events { get; set; }
 
     public DateTime? LastSwapDate => Events?.MaxBy(e => e.Date)?.Date;

@@ -25,9 +25,14 @@
     }
     private Task OnEditButtonClicked()
     {
+        if (Days == 0) Days = null;
         if (Days is not null)
         {
             item!.Ticks = new TimeSpan(days: (int)Days.Value, 0, 0, 0).Ticks;
+        }
+        else
+        {
+            item!.Ticks = null;
         }
         return CallBack.InvokeAsync(item);
     }
