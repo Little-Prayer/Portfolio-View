@@ -2,15 +2,15 @@
 @inject HttpClient Http
 @using Portfolio_View.Models
 
-@if (HasCategoryList is null)
+@if (categoryList is null)
 {
     <p>読み込み中</p>
 }
 else
 {
-    @foreach (var cat in HasCategoryList)
+    @foreach(var cat in categoryList)
     {
-        <p>@cat.category<input type="checkbox" @bind="cat.hasCategory"></p>
+        <p class=@(Categories!.Contains(cat) ? "Red":"") @onclick = "()=>turningHasCategory(cat)">@cat.Name</p>
     }
 }
 
@@ -21,11 +21,22 @@ else
     [Parameter]
     public EventCallback<ICollection<Category>> Callback { get; set; }
 
-    private List<(Category category, bool hasCategory)>? HasCategoryList;
+    private List<Category>? categoryList;
 
     protected override async Task OnParametersSetAsync()
     {
-        var categoryList = await Http.GetFromJsonAsync<List<Category>>("category");
-        HasCategoryList = categoryList?.Select(c => (c, Categories!.Contains(c))).ToList();
+        categoryList = await Http.GetFromJsonAsync<List<Category>>("category");
+    }
+
+    private void turningHasCategory(Category cat)
+    {
+        if(Categories!.Contains(cat))
+        {
+            Categories.Remove(cat);
+        }
+        else
+        {
+            Categories.Add(cat);
+        }
     }
 }
