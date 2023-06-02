@@ -8,18 +8,21 @@
 }
 else
 {
-    @foreach(var cat in categoryList)
+    @foreach (var cat in categoryList)
     {
-        <p class=@(Categories!.Contains(cat) ? "Red":"") @onclick = "()=>turningHasCategory(cat)">@cat.Name</p>
+        <p class=@(Categories!.Contains(cat) ? "Red":"") @onclick="()=>turningHasCategory(cat)">@cat.Name</p>
     }
+    <p>
+        <button class = "btn Editbtn" @onclick = "@(async () => await Callback.InvokeAsync(Categories))">確定</button>
+    </p>
 }
 
 @code
 {
     [Parameter]
-    public ICollection<Category>? Categories { get; set; }
+    public ISet<Category>? Categories { get; set; }
     [Parameter]
-    public EventCallback<ICollection<Category>> Callback { get; set; }
+    public EventCallback<ISet<Category>> Callback { get; set; }
 
     private List<Category>? categoryList;
 
@@ -30,7 +33,7 @@ else
 
     private void turningHasCategory(Category cat)
     {
-        if(Categories!.Contains(cat))
+        if (Categories!.Contains(cat))
         {
             Categories.Remove(cat);
         }
@@ -38,5 +41,6 @@ else
         {
             Categories.Add(cat);
         }
+        this.StateHasChanged();
     }
 }

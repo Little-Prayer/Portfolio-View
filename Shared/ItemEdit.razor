@@ -2,14 +2,26 @@
 @inject HttpClient Http
 @using Portfolio_View.Models
 
-<p>アイテム名：<input type="text" @bind="item!.Name"></p>
-<p>価格：<input type="text" @bind="item.Price">円</p>
-<p>交換頻度：<input type="number" @bind="Days">日</p>
-<p>カテゴリ</p>
+@switch (current)
+{
+    case displayState.ItemEdit:
+        <p>アイテム名：<input type="text" @bind="item!.Name"></p>
+        @if (error is not null)
+        {
+            <p>@error</p>
+        }
+        <p>価格：<input type="text" @bind="item.Price">円</p>
+        <p>交換頻度：<input type="number" @bind="Days">日</p>
+        <p @onclick = "@(()=>current=displayState.CategoryEdit)">カテゴリ</p>
 
-<p><button class="btn editbtn" @onclick="OnEditButtonClicked">確定</button></p>
-<p><button class="btn cancelbtn" @onclick=@(()=> CallBack.InvokeAsync(null))>キャンセル</button></p>
+        <p><button class="btn editbtn" @onclick="OnEditButtonClicked">確定</button></p>
+        <p><button class="btn cancelbtn" @onclick=@(()=> CallBack.InvokeAsync(null))>キャンセル</button></p>
+        break;
 
+    case displayState.CategoryEdit:
+        <CategorySelect Categories=@item!.Categories Callback="@CategoryEditExcution"/>
+        break;
+}
 
 @code {
     [Parameter]
@@ -18,13 +30,31 @@
     public EventCallback<Item> CallBack { get; set; }
 
     public double? Days;
+    private string? error;
+    private displayState current = displayState.ItemEdit;
 
     protected override void OnParametersSet()
     {
         Days = item?.SwapFrequency?.TotalDays;
     }
-    private Task OnEditButtonClicked()
+    private async Task OnEditButtonClicked()
     {
+        if (item!.Name is null || item.Name.Length == 0)
+        {
+            error = "アイテム名が入力されていません";
+            this.StateHasChanged();
+            return;
+        }
+
+        var nameSearchFromAPI = await Http.GetFromJsonAsync<List<Item>>($"item/data?name={item.Name}");
+        var isDuplicateName = nameSearchFromAPI!.SingleOrDefault(i => i.Name == item.Name);
+        if (isDuplicateName is not null && isDuplicateName?.ItemId != item.ItemId)
+        {
+            error = $"既存のアイテム名と重複しています";
+            this.StateHasChanged();
+            return;
+        }
+
         if (Days == 0) Days = null;
         if (Days is not null)
         {
@@ -34,6 +64,17 @@
         {
             item!.Ticks = null;
         }
-        return CallBack.InvokeAsync(item);
+        await CallBack.InvokeAsync(item);
+    }
+
+    private void CategoryEditExcution(ISet<Category> categorySet)
+    {
+        item!.Categories = categorySet;
+        current = displayState.ItemEdit;
+    }
+    private enum displayState
+    {
+        ItemEdit,
+        CategoryEdit
     }
 }

@@ -10,38 +10,38 @@
 }
 else
 {
-    @if (!isEdit)
+    @switch (current)
     {
-        <p>アイテム名：@item.Name</p>
-        <p>価格：@item.Price.ToString("N0")</p>
-        <p>@(item.Ticks is null ? "-" : item.SwapFrequency?.TotalDays.ToString() + "日")</p>
-        @if (item.Categories is null || item.Categories.Count == 0)
-        {
-            <p>なし</p>
-        }
-        else
-        {
-            <p>@(string.Join(",", item.Categories.Select(c => c.Name)))</p>
-        }
-        <p>最終交換日：@(item.LastSwapDate?.ToString("yyyy年MM月dd日") ?? "なし")</p>
-        <p>交換予定日：@(item.SwapExpectedDate?.ToString("yyyy年MM月dd日") ?? "なし")</p>
-        @foreach (var ev in item.Events!)
-        {
-            <p>@ev.Date</p>
-        }
-        <p>
-            <button class="btn editbtn" @onclick=@(()=>isEdit=true)>編集</button>
-        </p>
-        <p>
-            <button class="btn deletebtn" @onclick="OnClickDeleteButton">削除</button>
-        </p>
-        <p>
-    <a href="items">戻る</a>
-</p>
-    }
-    else
-    {
-        <ItemEdit item="@item" CallBack="@ItemEditExecution" />
+        case displayState.Detail:
+            <p> アイテム名：@item.Name </p>
+            <p> 価格：@item.Price.ToString("N0") </p>
+            <p>@(item.Ticks is null ? "-" : item.SwapFrequency?.TotalDays.ToString() + "日") </p>
+            @if (item.Categories is null || item.Categories.Count == 0)
+            {
+                <p> なし </p>
+            }
+            else
+            {
+                <p>@(string.Join(",", item.Categories.Select(c => c.Name))) </p>
+            }
+            <p> 最終交換日：@(item.LastSwapDate?.ToString("yyyy年MM月dd日") ?? "なし") </p>
+            <p> 交換予定日：@(item.SwapExpectedDate?.ToString("yyyy年MM月dd日") ?? "なし") </p>
+            @foreach (var ev in item.Events!)
+            {
+                <p> @ev.Date </p>
+            }
+            <p>
+                <button class="btn editbtn" @onclick=@(()=>current=displayState.ItemEdit)>編集</button>
+            </p>
+            <p>
+                <button class="btn deletebtn" @onclick="OnClickDeleteButton">削除</button>
+            </p>
+            <p><a href="items">戻る</a></p>
+            break;
+            
+        case displayState.ItemEdit:
+            <ItemEdit item="@item" CallBack="@ItemEditExecution" />
+            break;
     }
 }
 
@@ -50,7 +50,7 @@ else
     public int id { get; set; }
 
     private Item? item;
-    private bool isEdit;
+    private displayState current = displayState.Detail;
 
     protected override async Task OnInitializedAsync() =>
     item = await Http.GetFromJsonAsync<Item>("item/" + id.ToString());
@@ -61,12 +61,17 @@ else
         {
             Http.PutAsJsonAsync($"item/{id}", _item);
         }
-        isEdit = false;
+        current = displayState.Detail;
     }
-
     private async Task OnClickDeleteButton()
     {
         await Http.DeleteFromJsonAsync<Item>($"item/{id}");
         NavigationManager.NavigateTo("items");
+    }
+
+    private enum displayState
+    {
+        Detail,
+        ItemEdit
     }
 }
