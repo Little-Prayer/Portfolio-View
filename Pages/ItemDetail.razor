@@ -62,6 +62,7 @@ else
             Http.PutAsJsonAsync($"item/{id}", _item);
         }
         current = displayState.Detail;
+        this.StateHasChanged();
     }
     private async Task OnClickDeleteButton()
     {
