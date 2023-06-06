@@ -10,7 +10,7 @@ else
 {
     @foreach (var cat in categoryList)
     {
-        <p class=@(Categories!.Contains(cat) ? "Red":"") @onclick="()=>turningHasCategory(cat)">@cat.Name</p>
+        <p class=@(Categories!.Contains(cat) ? "Red":"") @onclick="()=>turningHasCategory(cat)">@(cat.Name+(Categories!.Contains(cat) ? "*":""))</p>
     }
     <p>
         <button class = "btn Editbtn" @onclick = "@(async () => await Callback.InvokeAsync(Categories))">確定</button>

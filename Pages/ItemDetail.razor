@@ -34,13 +34,20 @@ else
                 <button class="btn editbtn" @onclick=@(()=>current=displayState.ItemEdit)>編集</button>
             </p>
             <p>
+                <button class="btn eventAddbtn" @onclick=@(()=>current=displayState.EventAddition)>イベント追加</button>
+            </p>
+            <p>
                 <button class="btn deletebtn" @onclick="OnClickDeleteButton">削除</button>
             </p>
+
             <p><a href="items">戻る</a></p>
             break;
-            
+
         case displayState.ItemEdit:
             <ItemEdit item="@item" CallBack="@ItemEditExecution" />
+            break;
+        case displayState.EventAddition:
+            <EventAddition CallBack="@OnClickEventAddButton" />
             break;
     }
 }
@@ -64,15 +71,22 @@ else
         current = displayState.Detail;
         this.StateHasChanged();
     }
+    private async Task OnClickEventAddButton(Event? _event)
+    {
+
+    }
+
     private async Task OnClickDeleteButton()
     {
         await Http.DeleteFromJsonAsync<Item>($"item/{id}");
         NavigationManager.NavigateTo("items");
     }
 
+
     private enum displayState
     {
         Detail,
-        ItemEdit
+        ItemEdit,
+        EventAddition
     }
 }

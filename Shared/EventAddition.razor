@@ -1,0 +1,18 @@
+@using System.Net.Http
+@inject HttpClient Http
+@using Portfolio_View.Models
+
+<p>イベント日付：<input type="date" @bind="_event.Date"></p>
+<p>メモ：<textarea @bind="_event.Memo"/></p>
+
+@code {
+    [Parameter]
+    public EventCallback<Event> CallBack { get; set; }
+
+    private Event _event => new();
+
+    protected override void OnParametersSet()
+    {
+        _event.Date = DateTime.Today;
+    }
+}
