@@ -7,8 +7,7 @@ public class Event
     public int EventId { get; set; }
     [Required]
     public DateTime Date { get; set; }
-    [Required]
-    public Item Item { get; set; } = default!;
+    public Item? Item { get; set; }
 
     public string? Memo { get; set; }
 }

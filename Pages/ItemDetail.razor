@@ -26,9 +26,9 @@ else
             }
             <p> 最終交換日：@(item.LastSwapDate?.ToString("yyyy年MM月dd日") ?? "なし") </p>
             <p> 交換予定日：@(item.SwapExpectedDate?.ToString("yyyy年MM月dd日") ?? "なし") </p>
-            @foreach (var ev in item.Events!)
+            @foreach (var ev in item.Events!.OrderByDescending(e => e.Date))
             {
-                <p> @ev.Date </p>
+                <p> @ev.Date.ToShortDateString() </p>
             }
             <p>
                 <button class="btn editbtn" @onclick=@(()=>current=displayState.ItemEdit)>編集</button>
@@ -47,7 +47,7 @@ else
             <ItemEdit item="@item" CallBack="@ItemEditExecution" />
             break;
         case displayState.EventAddition:
-            <EventAddition CallBack="@OnClickEventAddButton" />
+            <EventAddition CallBack="@EventAddExecution" />
             break;
     }
 }
@@ -71,9 +71,15 @@ else
         current = displayState.Detail;
         this.StateHasChanged();
     }
-    private async Task OnClickEventAddButton(Event? _event)
+    private async Task EventAddExecution(Event? _event)
     {
-
+        if (_event is not null)
+        {
+            await Http.PostAsJsonAsync($"item/{id}/event", _event);
+            item!.Events!.Add(_event);
+        }
+        current = displayState.Detail;
+        this.StateHasChanged();
     }
 
     private async Task OnClickDeleteButton()
