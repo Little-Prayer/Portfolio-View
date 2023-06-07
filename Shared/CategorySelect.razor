@@ -59,12 +59,12 @@ else
 
     private async Task AddNewCategory()
     {
-        Console.WriteLine(Categories!.Any(c => c.Name == newCategoryName));
+
         if (string.IsNullOrEmpty(newCategoryName))
         {
             AddCategoryCaution = "新規カテゴリ名が空白です";
         }
-        else if (Categories!.Any(c => c.Name == newCategoryName))
+        else if (categoryList!.Any(c => c.Name == newCategoryName))
         {
             AddCategoryCaution = "既存のカテゴリ名と重複しています";
         }
