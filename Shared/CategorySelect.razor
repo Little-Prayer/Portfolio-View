@@ -10,10 +10,20 @@ else
 {
     @foreach (var cat in categoryList)
     {
-        <p class=@(Categories!.Contains(cat) ? "Red":"") @onclick="()=>turningHasCategory(cat)">@(cat.Name+(Categories!.Contains(cat) ? "*":""))</p>
+        <p class=@(Categories!.Contains(cat) ? "Red":"") @onclick="()=>turningHasCategory(cat)">
+    @(cat.Name + (Categories!.Contains(cat) ? "*" : ""))</p>
     }
+
     <p>
-        <button class = "btn Editbtn" @onclick = "@(async () => await Callback.InvokeAsync(Categories))">確定</button>
+        <input @bind="newCategoryName">
+        <button class="btn CategoryAddButton" @onclick="AddNewCategory">追加</button>
+        @if (!string.IsNullOrEmpty(AddCategoryCaution))
+        {
+        <p>@AddCategoryCaution</p>
+        }
+    </p>
+    <p>
+        <button class="btn Editbtn" @onclick="@(async () => await Callback.InvokeAsync(Categories))">確定</button>
     </p>
 }
 
@@ -26,10 +36,13 @@ else
 
     private List<Category>? categoryList;
 
-    protected override async Task OnParametersSetAsync()
-    {
-        categoryList = await Http.GetFromJsonAsync<List<Category>>("category");
-    }
+    private string? newCategoryName;
+    private string? AddCategoryCaution;
+
+
+
+    protected override async Task OnParametersSetAsync() =>
+    categoryList = await Http.GetFromJsonAsync<List<Category>>("category");
 
     private void turningHasCategory(Category cat)
     {
@@ -41,6 +54,28 @@ else
         {
             Categories.Add(cat);
         }
+        this.StateHasChanged();
+    }
+
+    private async Task AddNewCategory()
+    {
+        Console.WriteLine(Categories!.Any(c => c.Name == newCategoryName));
+        if (string.IsNullOrEmpty(newCategoryName))
+        {
+            AddCategoryCaution = "新規カテゴリ名が空白です";
+        }
+        else if (Categories!.Any(c => c.Name == newCategoryName))
+        {
+            AddCategoryCaution = "既存のカテゴリ名と重複しています";
+        }
+        else
+        {
+            var newCategory = new Category() { Name = newCategoryName };
+            await Http.PostAsJsonAsync("category", newCategory);
+            categoryList = await Http.GetFromJsonAsync<List<Category>>("category");
+            AddCategoryCaution = null;
+        }
+        newCategoryName = "";
         this.StateHasChanged();
     }
 }

@@ -28,7 +28,7 @@ else
             <p> 交換予定日：@(item.SwapExpectedDate?.ToString("yyyy年MM月dd日") ?? "なし") </p>
             @foreach (var ev in item.Events!.OrderByDescending(e => e.Date))
             {
-                <p> @ev.Date.ToShortDateString() </p>
+                <p> <a href="events/@(ev.EventId)">@ev.Date.ToShortDateString()</a> </p>
             }
             <p>
                 <button class="btn editbtn" @onclick=@(()=>current=displayState.ItemEdit)>編集</button>
@@ -60,7 +60,7 @@ else
     private displayState current = displayState.Detail;
 
     protected override async Task OnInitializedAsync() =>
-    item = await Http.GetFromJsonAsync<Item>("item/" + id.ToString());
+    item = await Http.GetFromJsonAsync<Item>($"item/{id}");
 
     private void ItemEditExecution(Item? _item)
     {

@@ -4,6 +4,7 @@
 @inject NavigationManager NavigationManager
 @using Portfolio_View.Models
 @page "/items"
+@page "/"
 
 @if (itemList is null)
 {
@@ -27,12 +28,16 @@ else
                 <td>@(item.Price.ToString("N0"))円</td>
                 <td>@(item.Ticks is not null ? item.SwapFrequency?.TotalDays + "日" : "-")</td>
                 <td>@(item.Categories!.Count > 0 ? string.Join(",", item.Categories.Select(c => c.Name)) : "なし")</td>
-                <td>@(item.LastSwapDate?.ToString("yyyy年MM月dd日") ?? "-")</td>
+                <td>
+                    <a href="events/@(item.Events?.MaxBy(e=>e.Date)?.EventId)">
+                    @(item.LastSwapDate?.ToString("yyyy年MM月dd日") ?? "-")
+                    </a>
+                </td>
                 <td>@(item.SwapExpectedDate?.ToString("yyyy年MM月dd日") ?? "-")</td>
             </tr>
         }
     </table>
-    <button class="btn createbtn" @onclick =@(()=>NavigationManager.NavigateTo("items/new")) >新規作成</button>
+    <button class="btn createbtn" @onclick=@(()=>NavigationManager.NavigateTo("items/new"))>新規作成</button>
 }
 @code {
     private List<Item>? itemList;
