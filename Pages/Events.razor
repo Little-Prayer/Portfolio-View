@@ -21,8 +21,16 @@ else
     @foreach (var ev in evList.OrderByDescending(e => e.Date))
         {
             <tr>
-                <td>@(ev.Date.ToString("yyyy年MM月dd日"))</td>
-                <td>@ev.Item!.Name</td>
+                <td>
+                    <a href="events/@ev.EventId">
+                        @(ev.Date.ToString("yyyy年MM月dd日"))
+                    </a>
+                </td>
+                <td>
+                    <a href="items/@ev.Item?.ItemId">
+                    @ev.Item!.Name
+                    </a>
+                </td>
             </tr>
         }
     </table>

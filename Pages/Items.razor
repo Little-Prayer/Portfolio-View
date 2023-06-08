@@ -29,9 +29,16 @@ else
                 <td>@(item.Ticks is not null ? item.SwapFrequency?.TotalDays + "日" : "-")</td>
                 <td>@(item.Categories!.Count > 0 ? string.Join(",", item.Categories.Select(c => c.Name)) : "なし")</td>
                 <td>
-                    <a href="events/@(item.Events?.MaxBy(e=>e.Date)?.EventId)">
-                    @(item.LastSwapDate?.ToString("yyyy年MM月dd日") ?? "-")
-                    </a>
+                    @if (item.LastSwapDate is not null)
+                    {
+                        <a href="events/@(item.Events?.MaxBy(e=>e.Date)?.EventId)">
+                            @(item.LastSwapDate?.ToString("yyyy年MM月dd日"))
+                        </a>
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
                 </td>
                 <td>@(item.SwapExpectedDate?.ToString("yyyy年MM月dd日") ?? "-")</td>
             </tr>

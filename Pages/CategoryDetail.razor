@@ -3,3 +3,49 @@
 @inject NavigationManager NavigationManager
 @using Portfolio_View.Models
 @page "/categories/{id:int}"
+
+@if(category is null)
+{
+    <p>読み込み中</p>
+}
+else
+{
+    <p>カテゴリー名：@category.Name</p>
+    <p>アイテム</p>
+    <ul>
+        @foreach(var item in category.Items!)
+        {
+            <li><a href="items/@item.ItemId">@item.Name</a></li>
+        }
+    </ul>
+    <p>交換履歴</p>
+    <ul>
+        @foreach(var ev in eventInCategoryList!.OrderByDescending(ev=>ev.ev.Date))
+        {
+            <li><a href="items/@ev.i.ItemId">@ev.i.Name</a> ： <a href="events/@ev.ev.EventId">@ev.ev.Date.ToShortDateString()</a></li>
+        }
+    </ul>
+    <p><button class="btn deleteBtn" @onclick="categoryDelete">カテゴリー削除</button></p>
+}
+@code
+{
+    [Parameter]
+    public int id { get; set; }
+
+    private Category? category;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        category = await Http.GetFromJsonAsync<Category>($"category/{id}");
+    }
+
+    private List<(Item i,Event ev)>? eventInCategoryList=>
+        category?.Items?.SelectMany(item =>item.Events?.Select(e=>e)!,
+                            (item,_event)=>(item,_event)).ToList();
+    
+    private async Task categoryDelete()
+    {
+        await Http.DeleteFromJsonAsync<Category>($"category/{id}");
+        NavigationManager.NavigateTo("categories");
+    }
+}
