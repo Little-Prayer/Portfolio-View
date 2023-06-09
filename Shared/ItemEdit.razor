@@ -12,8 +12,14 @@
         }
         <p>価格：<input type="text" @bind="item.Price">円</p>
         <p>交換頻度：<input type="number" @bind="Days">日</p>
-        <p @onclick = "@(()=>current=displayState.CategoryEdit)">カテゴリ</p>
-
+        <p>カテゴリ</p>
+        <ul>
+            @foreach(var cat in item.Categories!)
+            {
+                <li>@cat.Name</li>
+            }
+        </ul>
+        <p @onclick = "@(()=>current=displayState.CategoryEdit)">カテゴリ編集</p>
         <p><button class="btn editbtn" @onclick="OnEditButtonClicked">確定</button></p>
         <p><button class="btn cancelbtn" @onclick=@(()=> CallBack.InvokeAsync(null))>キャンセル</button></p>
         break;
