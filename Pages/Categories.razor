@@ -19,7 +19,7 @@ else
     @foreach (var category in categoryList)
         {
             <tr>
-                <td>@category.Name</td>
+                <td><a href="categories/@category.CategoryId">@category.Name</a></td>
                 <td>@category.Items?.Count()</td>
                 <td>
                     @(category.Items?
