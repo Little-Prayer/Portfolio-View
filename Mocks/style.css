@@ -1,0 +1,11 @@
+td {
+    text-align: center;
+}
+
+.yellow {
+    background-color: rgba(255, 238, 0, 0.87);
+}
+
+.red {
+    background-color: rgba(255, 0, 0, 0.5);
+}
