@@ -9,3 +9,8 @@ td {
 .red {
     background-color: rgba(255, 0, 0, 0.5);
 }
+
+.sidebar {
+    background-color: gray;
+    color: white;
+}
