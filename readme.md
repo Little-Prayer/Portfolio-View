@@ -70,3 +70,21 @@ Item"1..*"--"0..*"Category
 - アイテムの一覧を表示する。
   - カテゴリでの絞り込みを実装。
   - 交換予定日が近いアイテム/交換予定日を過ぎているアイテムに色付け。
+
+### 画面遷移
+
+```mermaid
+graph LR
+List(アイテム一覧)o--oDetail(アイテム詳細)
+List -->NewItem(アイテム作成)
+NewItem -->Detail
+List -->Filter(絞込設定)
+Filter -->|絞込|List
+Detail o--oEdit(アイテム編集)
+Edit o--oCatSelect(カテゴリ選択)
+Detail o--oEvent(イベント詳細)
+Event o--oEventEdit(イベント編集)
+Detail -->NewEvent(イベント追加)
+NewEvent -->Event
+```
+
