@@ -1,6 +1,6 @@
 # アプリ概要
 
-自転車のパーツなどの交換を、パーツごとに交換の記録と交換頻度の設定をすることで管理するアプリ。
+自転車のパーツなどの交換を、パーツごとに交換の記録と交換頻度の設定をすることで管理する。
 
 ## 使用技術
 
@@ -28,6 +28,10 @@ ASP-->|HTTP レスポンス|Blazor
 
 ### クラス図
 
+クラスのフィールドはフロントとバックで同じものを定義する。
+
+プロパティはフロントでのみ定義する。
+
 ```mermaid
 classDiagram
 
@@ -46,14 +50,34 @@ class Category {
   +string Name
 }
 
-class Event {
-  +int EventId
+class Swapping {
+  +int SwappingId
   +string Memo
   +DateTime SwapDate
 }
-Item"1"<--"*"Event
+Item"1"<--"*"Swapping
 Item"1..*"--"0..*"Category
 ```
+
+#### API一覧
+
+|クラス|メソッド|URL|説明|
+|--|--|--|--|
+|Item|GET|/Item|一覧を取得|
+|Item|GET|/Item/{ID}|1つ取得|
+|Item|GET|/Item/data?name=|nameで検索（部分一致）|
+|Item|PUT|/Item/{ID}|編集|
+|Item|DELETE|/Item/{ID}|削除|
+|Item|POST|/Item|/Item|作成|
+|Item|POST|/Item/{id}/Swapping|ItemにSwappingを追加|
+|Swapping|GET|/Swapping|一覧を取得|
+|Swapping|GET|/Swapping/{ID}|1つ取得|
+|Swapping|DELETE|/Swapping/{ID}|削除|
+|Swapping|POST|/Swapping/{ID}|編集|
+|Category|GET|/Category|一覧を取得|
+|Category|GET|/Category/{ID}|一つ取得|
+|Category|POST|/Category|作成|
+|Category|DELETE|/Category/{ID}|削除|
 
 #### クラス補足
 
