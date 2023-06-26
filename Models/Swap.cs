@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Portfolio_View.Models;
 
-public class Event
+public class Swap
 {
-    public int EventId { get; set; }
+    public int SwapId { get; set; }
     [Required]
     public DateTime Date { get; set; }
     public Item? Item { get; set; }

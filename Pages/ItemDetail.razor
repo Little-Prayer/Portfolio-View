@@ -36,13 +36,13 @@ else
             <p> 交換予定日：@(item.SwapExpectedDate?.ToString("yyyy年MM月dd日") ?? "なし") </p>
             <p>交換履歴</p>
             <ul>
-    @foreach (var ev in item.Events!.OrderByDescending(e => e.Date))
+    @foreach (var sw in item.Swaps!.OrderByDescending(e => e.Date))
                 {
-                    <li> <a href="events/@(ev.EventId)">@ev.Date.ToShortDateString()</a> </li>
+                    <li> <a href="swaps/@(sw.SwapId)">@sw.Date.ToShortDateString()</a> </li>
                 }
             </ul>
             <p>
-                <button class="btn eventAddbtn" @onclick=@(()=>current=displayState.EventAddition)>イベント追加</button>
+                <button class="btn swapAddbtn" @onclick=@(()=>current=displayState.SwapAddition)>イベント追加</button>
             </p>
             <p>
                 <button class="btn editbtn" @onclick=@(()=>current=displayState.ItemEdit)>アイテム編集</button>
@@ -58,8 +58,8 @@ else
         case displayState.ItemEdit:
             <ItemEdit item="@item" CallBack="@ItemEditExecution" />
             break;
-        case displayState.EventAddition:
-            <EventAddition CallBack="@EventAddExecution" />
+        case displayState.SwapAddition:
+            <EventAddition CallBack="@SwapAddExecution" />
             break;
     }
 }
@@ -83,12 +83,12 @@ else
         current = displayState.Detail;
         this.StateHasChanged();
     }
-    private async Task EventAddExecution(Event? _event)
+    private async Task SwapAddExecution(Swap? _swap)
     {
-        if (_event is not null)
+        if (_swap is not null)
         {
-            await Http.PostAsJsonAsync($"item/{id}/event", _event);
-            item!.Events!.Add(_event);
+            await Http.PostAsJsonAsync($"item/{id}/swap", _swap);
+            item!.Swaps!.Add(_swap);
         }
         current = displayState.Detail;
         this.StateHasChanged();
@@ -105,6 +105,6 @@ else
     {
         Detail,
         ItemEdit,
-        EventAddition
+        SwapAddition
     }
 }

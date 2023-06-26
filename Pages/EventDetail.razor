@@ -2,18 +2,18 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @using Portfolio_View.Models
-@page "/events/{id:int}"
+@page "/swaps/{id:int}"
 
-@if (_event is null)
+@if (_swap is null)
 {
     <p>読み込み中</p>
 }
 else
 {
-    <p>交換実施日：@_event.Date.ToShortDateString()</p>
-    <p>アイテム名：<a href="items/@_event.Item?.ItemId">@(_event.Item?.Name ?? "なし")</a></p>
-    <p>メモ:@_event.Memo</p>
-    <p><button class="btn deleteBtn" @onclick="eventDelete">イベント削除</button></p>
+    <p>交換実施日：@_swap.Date.ToShortDateString()</p>
+    <p>アイテム名：<a href="items/@_swap.Item?.ItemId">@(_swap.Item?.Name ?? "なし")</a></p>
+    <p>メモ:@_swap.Memo</p>
+    <p><button class="btn deleteBtn" @onclick="swapDelete">イベント削除</button></p>
 }
 
 @code
@@ -21,14 +21,14 @@ else
     [Parameter]
     public int id { get; set; }
 
-    private Event? _event;
+    private Swap? _swap;
 
     protected override async Task OnInitializedAsync() =>
-    _event = await Http.GetFromJsonAsync<Event>($"event/{id}");
+    _swap = await Http.GetFromJsonAsync<Swap>($"swap/{id}");
 
-    private async Task eventDelete()
+    private async Task swapDelete()
     {
-        await Http.DeleteFromJsonAsync<Event>($"event/{id}");
-        NavigationManager.NavigateTo($"items/{_event?.Item?.ItemId}");
+        await Http.DeleteFromJsonAsync<Swap>($"swap/{id}");
+        NavigationManager.NavigateTo($"items/{_swap?.Item?.ItemId}");
     }
 }
