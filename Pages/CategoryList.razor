@@ -1,7 +1,4 @@
-@using System.Net.Http
 @inject HttpClient Http
-@using System.Net.Http.Json
-@using Portfolio_View.Models
 @page "/categories"
 
 @if (categoryList is null)
@@ -23,7 +20,8 @@ else
                 <td>@category.Items?.Count()</td>
                 <td>
                     @(category.Items?
-                        .Sum(i => i.Ticks is not null && (int)i.SwapFrequency?.TotalDays! > 0 ? i.Price * 30 / (int)i.SwapFrequency?.TotalDays! : 0)
+                        .Sum(i => i.Ticks is not null && (int)i.SwapFrequency?.TotalDays! > 0 ? i.Price * 30 /
+                        (int)i.SwapFrequency?.TotalDays! : 0)
                         .ToString("N1"))
                 </td>
             </tr>

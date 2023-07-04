@@ -1,7 +1,5 @@
-@using System.Net.Http
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
-@using Portfolio_View.Models
 @page "/items/new"
 
 <ItemEdit item=@item CallBack="CreateNewItem" />
