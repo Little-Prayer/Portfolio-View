@@ -28,7 +28,7 @@ else
                 <td>
                     @if (item.LastSwapDate is not null)
                     {
-                        <a href="events/@(item.Events?.MaxBy(e=>e.Date)?.EventId)">
+                        <a href="swaps/@(item.Swaps?.MaxBy(e=>e.Date)?.SwapId)">
                             @(item.LastSwapDate?.ToString("yyyy年MM月dd日"))
                         </a>
                     }

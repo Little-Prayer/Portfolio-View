@@ -19,10 +19,9 @@ else
     </ul>
     <p>交換履歴</p>
     <ul>
-    @foreach (var ev in eventInCategoryList!.OrderByDescending(ev => ev.ev.Date))
+        @foreach(var sw in swapInCategoryList!.OrderByDescending(sw=>sw.sw.Date))
         {
-            <li><a href="items/@ev.i.ItemId">@ev.i.Name</a> ： <a
-                    href="events/@ev.ev.EventId">@ev.ev.Date.ToShortDateString()</a></li>
+            <li><a href="items/@sw.i.ItemId">@sw.i.Name</a> ： <a href="swaps/@sw.sw.SwapId">@sw.sw.Date.ToShortDateString()</a></li>
         }
     </ul>
     <p><button class="btn deleteBtn" @onclick="categoryDelete">カテゴリー削除</button></p>
@@ -39,10 +38,10 @@ else
         category = await Http.GetFromJsonAsync<Category>($"category/{id}");
     }
 
-    private List<(Item i, Event ev)>? eventInCategoryList =>
-    category?.Items?.SelectMany(item => item.Events?.Select(e => e)!,
-    (item, _event) => (item, _event)).ToList();
-
+    private List<(Item i,Swap sw)>? swapInCategoryList=>
+        category?.Items?.SelectMany(item =>item.Swaps?.Select(e=>e)!,
+                            (item,_swap)=>(item,_swap)).ToList();
+    
     private async Task categoryDelete()
     {
         await Http.DeleteFromJsonAsync<Category>($"category/{id}");

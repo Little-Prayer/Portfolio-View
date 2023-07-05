@@ -1,0 +1,20 @@
+@inject HttpClient Http
+
+<p>イベント日付：<input type="date" @bind="_swap!.Date"></p>
+<p>メモ：<textarea @bind="_swap.Memo" /></p>
+
+<p><button class="btn editbtn" @onclick=@(()=> CallBack.InvokeAsync(_swap))>確定</button></p>
+<p><button class="btn cancelbtn" @onclick=@(()=> CallBack.InvokeAsync(null))>キャンセル</button></p>
+
+@code {
+    [Parameter]
+    public EventCallback<Swap> CallBack { get; set; }
+
+    private Swap? _swap;
+
+    protected override void OnParametersSet()
+    {
+        _swap = new Swap();
+        _swap.Date = DateTime.Today;
+    }
+}
