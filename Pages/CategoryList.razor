@@ -1,4 +1,8 @@
 @inject HttpClient Http
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
 @page "/categories"
 
 @if (categoryList is null)
@@ -31,6 +35,15 @@ else
 @code {
     private List<Category>? categoryList;
 
-    protected override async Task OnInitializedAsync() =>
-    categoryList = await Http.GetFromJsonAsync<List<Category>>("category");
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            categoryList = await Http.GetFromJsonAsync<List<Category>>("category");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
 }

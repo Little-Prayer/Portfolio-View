@@ -1,6 +1,10 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @using Portfolio_View.Models
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
 @page "/categories/{id:int}"
 
 @if (category is null)
@@ -19,9 +23,10 @@ else
     </ul>
     <p>交換履歴</p>
     <ul>
-        @foreach(var sw in swapInCategoryList!.OrderByDescending(sw=>sw.sw.Date))
+    @foreach (var sw in swapInCategoryList!.OrderByDescending(sw => sw.sw.Date))
         {
-            <li><a href="items/@sw.i.ItemId">@sw.i.Name</a> ： <a href="swaps/@sw.sw.SwapId">@sw.sw.Date.ToShortDateString()</a></li>
+            <li><a href="items/@sw.i.ItemId">@sw.i.Name</a> ： <a href="swaps/@sw.sw.SwapId">@sw.sw.Date.ToShortDateString()</a>
+            </li>
         }
     </ul>
     <p><button class="btn deleteBtn" @onclick="categoryDelete">カテゴリー削除</button></p>
@@ -35,13 +40,20 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        category = await Http.GetFromJsonAsync<Category>($"category/{id}");
+        try
+        {
+            category = await Http.GetFromJsonAsync<Category>($"category/{id}");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
     }
 
-    private List<(Item i,Swap sw)>? swapInCategoryList=>
-        category?.Items?.SelectMany(item =>item.Swaps?.Select(e=>e)!,
-                            (item,_swap)=>(item,_swap)).ToList();
-    
+    private List<(Item i, Swap sw)>? swapInCategoryList =>
+    category?.Items?.SelectMany(item => item.Swaps?.Select(e => e)!,
+    (item, _swap) => (item, _swap)).ToList();
+
     private async Task categoryDelete()
     {
         await Http.DeleteFromJsonAsync<Category>($"category/{id}");

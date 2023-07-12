@@ -2,6 +2,10 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @using Portfolio_View.Models
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
 @page "/swaps/{id:int}"
 
 @if (_swap is null)
@@ -23,8 +27,17 @@ else
 
     private Swap? _swap;
 
-    protected override async Task OnInitializedAsync() =>
-    _swap = await Http.GetFromJsonAsync<Swap>($"swap/{id}");
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _swap = await Http.GetFromJsonAsync<Swap>($"swap/{id}");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
 
     private async Task swapDelete()
     {

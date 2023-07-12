@@ -1,5 +1,9 @@
 ﻿@inject HttpClient Http
 @inject NavigationManager NavigationManager
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
 @page "/items"
 @page "/"
 
@@ -46,6 +50,15 @@ else
 @code {
     private List<Item>? itemList;
 
-    protected override async Task OnInitializedAsync() =>
-    itemList = await Http.GetFromJsonAsync<List<Item>>("item");
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            itemList = await Http.GetFromJsonAsync<List<Item>>("item");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
 }

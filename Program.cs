@@ -8,13 +8,11 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddHttpClient("Portfolio-API.ServerAPI", client =>
-    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+    client.BaseAddress = new Uri("http://localhost:5184"))
     .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
     .CreateClient("Portfolio-API.ServerAPI"));
-
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5184") });
 
 builder.Services.AddMsalAuthentication(options =>
 {

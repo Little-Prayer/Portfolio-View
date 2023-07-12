@@ -1,5 +1,9 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
 @page "/items/{id:int}"
 
 @if (item is null)
@@ -69,9 +73,17 @@ else
     private Item? item;
     private displayState current = displayState.Detail;
 
-    protected override async Task OnInitializedAsync() =>
-    item = await Http.GetFromJsonAsync<Item>($"item/{id}");
-
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            item = await Http.GetFromJsonAsync<Item>($"item/{id}");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
     private void ItemEditExecution(Item? _item)
     {
         if (_item is not null)

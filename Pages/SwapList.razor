@@ -2,6 +2,10 @@
 @inject HttpClient Http
 @using System.Net.Http.Json
 @using Portfolio_View.Models
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
 @page "/swaps"
 @page "/items/{id:int}/swaps"
 
@@ -28,7 +32,7 @@ else
                 </td>
                 <td>
                     <a href="items/@sw.Item?.ItemId">
-                    @sw.Item!.Name
+                        @sw.Item!.Name
                     </a>
                 </td>
             </tr>
@@ -40,5 +44,15 @@ else
 
     [Parameter] public int? id { get; set; }
 
-    protected override async Task OnParametersSetAsync() =>
-    swList = await Http.GetFromJsonAsync<List<Swap>>(id is null ? "swap" : "item/" + id.Value.ToString() + "/swap");
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            swList = await Http.GetFromJsonAsync<List<Swap>>(id is null ? "swap" : "item/" + id.Value.ToString() + "/swap");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+}

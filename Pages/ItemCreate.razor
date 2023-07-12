@@ -1,5 +1,8 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
+
 @page "/items/new"
 
 <ItemEdit item=@item CallBack="CreateNewItem" />
