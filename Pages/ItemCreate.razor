@@ -1,14 +1,16 @@
-@using System.Net.Http
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @using Portfolio_View.Models
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Portfolio_View.Shared
+@attribute [Authorize]
 @page "/items/new"
 
 <ItemEdit item=@item CallBack="CreateNewItem" />
 
 @code {
     private Item? item;
-
     protected override void OnInitialized()
     {
         item = new Item();
@@ -20,7 +22,15 @@
     private async void CreateNewItem(Item item)
     {
         if (item is null) NavigationManager.NavigateTo("items");
-        var newItem = await Http.PostAsJsonAsync("item", item);
-        NavigationManager.NavigateTo($"items/{newItem.Content.ReadFromJsonAsync<Item>().Result?.ItemId}");
+        try
+        {
+            var newItem = await Http.PostAsJsonAsync("item", item);
+            NavigationManager.NavigateTo($"items/{newItem.Content.ReadFromJsonAsync<Item>().Result?.ItemId}");
+
+        }
+        catch(AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
     }
 }

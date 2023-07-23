@@ -1,7 +1,10 @@
-@using System.Net.Http
 @inject HttpClient Http
 @using System.Net.Http.Json
 @using Portfolio_View.Models
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Portfolio_View.Shared
+@attribute [Authorize]
 @page "/swaps"
 @page "/items/{id:int}/swaps"
 
@@ -14,11 +17,11 @@
 else
 {
     <table>
-    <tr>
-        <th>交換日</th>
-        <th>アイテム名</th>
-    </tr>
-    @foreach (var sw in swList.OrderByDescending(e => e.Date))
+        <tr>
+            <th>交換日</th>
+            <th>アイテム名</th>
+        </tr>
+        @foreach (var sw in swList.OrderByDescending(e => e.Date))
         {
             <tr>
                 <td>
@@ -28,19 +31,27 @@ else
                 </td>
                 <td>
                     <a href="items/@sw.Item?.ItemId">
-                    @sw.Item!.Name
+                        @sw.Item!.Name
                     </a>
                 </td>
             </tr>
         }
     </table>
 }
+
 @code {
     private List<Swap>? swList;
-
     [Parameter] public int? id { get; set; }
 
-    protected override async Task OnParametersSetAsync() =>
-    swList = await Http.GetFromJsonAsync<List<Swap>>(id is null ? "swap" : "item/" + id.Value.ToString() + "/swap");
-
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            swList = await Http.GetFromJsonAsync<List<Swap>>(id is null ? "swap" : "item/" + id.Value.ToString() + "/swap");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
 }
