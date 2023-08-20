@@ -17,7 +17,6 @@ builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
 builder.Services.AddMsalAuthentication(options =>
 {
     builder.Configuration.Bind("AzureAdB2C", options.ProviderOptions.Authentication);
-    options.ProviderOptions.DefaultAccessTokenScopes.Add("https://ExpendablesManagementApp.onmicrosoft.com/7eb11697-5b74-47dc-8006-982a088ffe87/API.Access");
     options.ProviderOptions.LoginMode = "redirect";
 });
 
